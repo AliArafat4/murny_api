@@ -7,7 +7,8 @@ import '../../config/supabase.dart';
 import '../../logic/check_body.dart';
 
 otpHandler(Request req) async {
-  //TODO: FIX OTP
+  //TODO: FIX OTP - issue from package/ might use version 1.11.1
+  //TODO IT IS FIXED ?
   try {
     final Map body = jsonDecode(await req.readAsString());
 
@@ -21,7 +22,7 @@ otpHandler(Request req) async {
       shouldCreateUser: false,
     );
 
-    return Response.ok("req.toString()");
+    return Response.ok("OTP has been sent to $email successfully");
   } catch (err) {
     return Response.badRequest(body: err.toString());
   }

@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'package:dotenv/dotenv.dart';
 import 'package:shelf/shelf_io.dart';
+import 'package:shelf_hotreload/shelf_hotreload.dart';
 import 'config/supabase.dart';
 import 'routes/main_route.dart';
-
-import 'package:shelf_hotreload/shelf_hotreload.dart';
 
 late final DotEnv env;
 void main(List<String> args) async {
@@ -27,7 +26,7 @@ Future<HttpServer> createServer() async {
   final ip = InternetAddress.anyIPv4;
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
 
-  final server = await serve(MainRoute().route, ip, port);
+  final server = await serve(MainRoute().route.call, ip, port);
   print(
       'Server listening on port https://${server.address.host}:${server.port}');
   return server;
