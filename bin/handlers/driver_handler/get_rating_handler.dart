@@ -7,7 +7,7 @@ getRatingHandler(Request req) async {
     final UserResponse user = await SupaBaseIntegration()
         .getUserByToken(token: req.headers['token']!);
 
-    late final res;
+    late final List<Map<String, dynamic>> res;
     if (user.user!.userMetadata!['type'] == 'driver') {
       res = await SupaBaseIntegration().getFromTable(
           tableName: 'rate', user: user, columnCondition: 'driver_id');

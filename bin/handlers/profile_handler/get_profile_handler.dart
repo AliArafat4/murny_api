@@ -2,7 +2,6 @@ import 'package:shelf/shelf.dart';
 import 'dart:convert';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
-import '../../logic/check_body.dart';
 
 getProfileHandler(Request req) async {
   try {

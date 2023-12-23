@@ -115,4 +115,51 @@ class SupaBaseIntegration {
         body: {'license': licenseURL}, tableName: path, user: user);
   }
   //TODO-----------------------------Merge--------------------------------------
+
+  getChatMessages({
+    required String tableName,
+    required UserResponse user,
+    required String sentTo,
+  }) async {
+    return subaInstance.from(tableName).stream(primaryKey: [
+      'id'
+    ]).map((msg) => msg.where((element) =>
+        element['sent_from'] == user.user!.id && element['sent_to'] == sentTo ||
+        element['sent_to'] == user.user!.id && element['sent_from'] == sentTo));
+  }
+
+  Future<AuthResponse> signInWithGoogle(
+      {required accessToken, required idToken}) async {
+    final SupabaseClient client = SupaBaseIntegration.subaInstance;
+
+    if (accessToken == null) {
+      throw 'No Access Token found.';
+    }
+    if (idToken == null) {
+      throw 'No ID Token found.';
+    }
+
+    return await client.auth.signInWithIdToken(
+      provider: OAuthProvider.apple,
+      idToken: idToken,
+      accessToken: accessToken,
+    );
+  }
+
+  Future<AuthResponse> signInWithApple(
+      {required credential, required rawNonce}) async {
+    final SupabaseClient client = SupaBaseIntegration.subaInstance;
+
+    final idToken = credential.identityToken;
+    if (idToken == null) {
+      throw const AuthException(
+          'Could not find ID Token from generated credential.');
+    }
+
+    return await client.auth.signInWithIdToken(
+      provider: OAuthProvider.apple,
+      idToken: idToken,
+      nonce: rawNonce,
+    );
+  }
 }

@@ -9,7 +9,7 @@ class ChatRoute {
   Handler get route {
     final Router appRoute = Router()
       ..post("/send_message", sendMessageHandler)
-      ..post("/get_message", getMessageHandler);
+      ..get("/get_message", getMessageHandler);
 
     final pipe = Pipeline().addMiddleware(checkToken()).addHandler(appRoute);
 
