@@ -15,7 +15,7 @@ updateUserProfileHandler(Request req) async {
 
     //update user profile in [profile] table
     SupaBaseIntegration()
-        .updateFromTable(tableName: 'users', body: body, user: user);
+        .updateTable(tableName: 'users', body: body, user: user);
 
     return Response.ok("Profile Updated Successfully ");
   } on FormatException catch (err) {

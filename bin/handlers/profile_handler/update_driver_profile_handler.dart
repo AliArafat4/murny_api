@@ -16,7 +16,7 @@ updateDriverProfileHandler(Request req) async {
 
     //update user profile in [profile] table
     await SupaBaseIntegration()
-        .updateFromTable(tableName: 'driver', body: body, user: user);
+        .updateTable(tableName: 'driver', body: body, user: user);
 
     return Response.ok("Profile Updated Successfully");
   } on FormatException catch (err) {

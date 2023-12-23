@@ -12,11 +12,11 @@ getProfileHandler(Request req) async {
     late final List<Map<String, dynamic>> res;
 
     if (user.user!.userMetadata!['type'] == 'driver') {
-      res = await SupaBaseIntegration()
-          .getFromTable(tableName: 'driver', user: user);
+      res = await SupaBaseIntegration().getFromTable(
+          tableName: 'driver', user: user, columnCondition: 'user_id');
     } else if (user.user!.userMetadata!['type'] == 'user') {
-      res = await SupaBaseIntegration()
-          .getFromTable(tableName: 'users', user: user);
+      res = await SupaBaseIntegration().getFromTable(
+          tableName: 'users', user: user, columnCondition: 'user_id');
     } else {
       return Response.badRequest(body: "user is not driver or user");
     }

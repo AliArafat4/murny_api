@@ -1,26 +1,16 @@
-import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
-import '../../logic/check_body.dart';
 
-postRatingHandler(Request req) async {
+getOrderHandler(Request req) async {
   try {
-    final Map<String, dynamic> body = jsonDecode(await req.readAsString());
-    checkBody(keys: ['stars', 'comment', 'driver_id'], body: body);
-
     final UserResponse user = await SupaBaseIntegration()
         .getUserByToken(token: req.headers['token']!);
 
-    if (user.user!.userMetadata!['type'] == 'user') {
-      body.addAll({'created_by_id': user.user!.id});
+    final res = await SupaBaseIntegration().getFromTable(
+        tableName: 'order', user: user, columnCondition: 'order_from_id');
 
-      await SupaBaseIntegration().insertToTable(tableName: 'rate', body: body);
-    } else {
-      return Response.badRequest(body: "user is not of type [user]");
-    }
-
-    return Response.ok("rating has been made successfully");
+    return Response.ok(res.toString());
   } on FormatException catch (err) {
     if (err.message == "Unexpected end of input") {
       return Response.badRequest(body: "Body cannot be empty");

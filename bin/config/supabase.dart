@@ -5,22 +5,38 @@ import '../server.dart';
 class SupaBaseIntegration {
   static late SupabaseClient subaInstance;
   get supabase {
+    GotrueAsyncStorage? x;
     final supabase = SupabaseClient(
-        "${env["SUPABASE_URL"]}", "${env["SUPABASE_SECRET_KEY"]}");
+        "${env["SUPABASE_URL"]}", "${env["SUPABASE_SECRET_KEY"]}",
+        authOptions: AuthClientOptions(
+          authFlowType: AuthFlowType.implicit,
+          pkceAsyncStorage: x,
+        ));
     SupaBaseIntegration.subaInstance = supabase;
   }
 
+  //TODO: MAKE IT GET
   Future<UserResponse> getUserByToken({required String token}) async {
     final UserResponse user = await subaInstance.auth.getUser(token);
     return user;
   }
 
-  Future<List<Map<String, dynamic>>> getFromTable(
-      {required String tableName, required user}) async {
+  insertToTable({
+    required Map<String, dynamic> body,
+    required String tableName,
+  }) async {
+    await subaInstance.from(tableName).insert(body);
+  }
+
+  Future<List<Map<String, dynamic>>> getFromTable({
+    required String tableName,
+    required UserResponse user,
+    required String columnCondition,
+  }) async {
     return await subaInstance
         .from(tableName)
         .select()
-        .eq('user_id', user.user!.id);
+        .eq(columnCondition, user.user!.id);
   }
 
   Future<List<Map<String, dynamic>>> getFromPublicTable(
@@ -28,7 +44,7 @@ class SupaBaseIntegration {
     return await subaInstance.from(tableName).select();
   }
 
-  updateFromTable(
+  updateTable(
       {required String tableName,
       required Map<String, dynamic> body,
       required UserResponse user}) async {
@@ -42,6 +58,7 @@ class SupaBaseIntegration {
     await subaInstance.auth.admin.deleteUser(user.user!.id);
   }
 
+  //TODO-----------------------------Merge--------------------------------------
   uploadUserAvatar(
       {required UserResponse user,
       required String bucket,
@@ -67,8 +84,7 @@ class SupaBaseIntegration {
     final avatarURL =
         subaInstance.storage.from(bucket).getPublicUrl(newAvatarPath);
 
-    await updateFromTable(
-        body: {'image': avatarURL}, tableName: path, user: user);
+    await updateTable(body: {'image': avatarURL}, tableName: path, user: user);
   }
 
   uploadDriverLicense(
@@ -95,7 +111,8 @@ class SupaBaseIntegration {
     final licenseURL =
         subaInstance.storage.from('license').getPublicUrl(newLicensePath);
 
-    await updateFromTable(
+    await updateTable(
         body: {'license': licenseURL}, tableName: path, user: user);
   }
+  //TODO-----------------------------Merge--------------------------------------
 }
