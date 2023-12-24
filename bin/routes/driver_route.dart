@@ -10,7 +10,8 @@ class DriverRoute {
       ..post("/response_to_order", responseToOrderHandler)
       ..get("/get_rating", getRatingHandler);
 
-    final pipe = Pipeline().addMiddleware(checkToken()).addHandler(appRoute);
+    final pipe =
+        Pipeline().addMiddleware(checkToken()).addHandler(appRoute.call);
 
     return pipe;
   }

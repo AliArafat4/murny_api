@@ -10,7 +10,8 @@ class UserRoute {
       ..post("/post_rating", postRatingHandler)
       ..post("/post_user_order", postOrderHandler);
 
-    final pipe = Pipeline().addMiddleware(checkToken()).addHandler(appRoute);
+    final pipe =
+        Pipeline().addMiddleware(checkToken()).addHandler(appRoute.call);
 
     return pipe;
   }

@@ -18,7 +18,8 @@ class ProfileRoute {
       ..get("/get_profile", getProfileHandler)
       ..delete("/delete_user_account", deleteAccountHandler);
 
-    final pipe = Pipeline().addMiddleware(checkToken()).addHandler(appRoute);
+    final pipe =
+        Pipeline().addMiddleware(checkToken()).addHandler(appRoute.call);
 
     return pipe;
   }

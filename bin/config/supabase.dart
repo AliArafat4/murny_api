@@ -44,7 +44,7 @@ class SupaBaseIntegration {
     return await subaInstance.from(tableName).select();
   }
 
-  updateTable(
+  Future<void> updateTable(
       {required String tableName,
       required Map<String, dynamic> body,
       required UserResponse user}) async {
@@ -52,14 +52,26 @@ class SupaBaseIntegration {
     await subaInstance.from(tableName).upsert(body, onConflict: 'user_id');
   }
 
-  void deleteUser({required UserResponse user}) async {
+  Future<void> updateOrderTable(
+      {required String tableName,
+      required Map<String, dynamic> body,
+      required UserResponse user}) async {
+    await subaInstance
+        .from(tableName)
+        .upsert(body, onConflict: 'id')
+        .eq('driver_id', user.user!.id)
+        .eq('order_from_id', body['order_from_id'])
+        .eq('order_state', 'just created');
+  }
+
+  Future<void> deleteUser({required UserResponse user}) async {
     await subaInstance.from('profile').delete().eq('user_id', user.user!.id);
     await subaInstance.from('users').delete().eq('user_id', user.user!.id);
     await subaInstance.auth.admin.deleteUser(user.user!.id);
   }
 
   //TODO-----------------------------Merge--------------------------------------
-  uploadUserAvatar(
+  Future<void> uploadUserAvatar(
       {required UserResponse user,
       required String bucket,
       required String path,
@@ -116,7 +128,7 @@ class SupaBaseIntegration {
   }
   //TODO-----------------------------Merge--------------------------------------
 
-  getChatMessages({
+  Future<Stream> getChatMessages({
     required String tableName,
     required UserResponse user,
     required String sentTo,

@@ -16,7 +16,7 @@ getRatingHandler(Request req) async {
     } else {
       return Response.badRequest(body: "user is not of type [driver]");
     }
-    print(res);
+
     return Response.ok(res.toString());
   } on FormatException catch (err) {
     if (err.message == "Unexpected end of input") {
