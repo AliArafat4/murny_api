@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:dotenv/dotenv.dart';
 import 'package:shelf/shelf_io.dart';
-import 'package:shelf_hotreload/shelf_hotreload.dart';
+// import 'package:shelf_hotreload/shelf_hotreload.dart';
 import 'config/supabase.dart';
 import 'routes/main_route.dart';
 
@@ -9,15 +9,15 @@ late final DotEnv env;
 void main(List<String> args) async {
   env = DotEnv(includePlatformEnvironment: true)..load();
 
-  withHotreload(
-    () => createServer(),
-    onReloaded: () => print('Reload!'),
-    onHotReloadNotAvailable: () => print('No hot-reload :('),
-    onHotReloadAvailable: () => print('Yay! Hot-reload :)'),
-    onHotReloadLog: (log) => print('Reload Log: ${log.message}'),
-    logLevel: Level.INFO,
-  );
-  // await createServer();
+  // withHotreload(
+  //   () => createServer(),
+  //   onReloaded: () => print('Reload!'),
+  //   onHotReloadNotAvailable: () => print('No hot-reload :('),
+  //   onHotReloadAvailable: () => print('Yay! Hot-reload :)'),
+  //   onHotReloadLog: (log) => print('Reload Log: ${log.message}'),
+  //   logLevel: Level.INFO,
+  // );
+  await createServer();
 }
 
 Future<HttpServer> createServer() async {
