@@ -10,7 +10,7 @@ getOrderHandler(Request req) async {
     final res = await SupaBaseIntegration().getFromTable(
         tableName: 'order', user: user, columnCondition: 'order_from_id');
 
-    return Response.ok(res.first.toString(), headers: {
+    return Response.ok(res.toString(), headers: {
       "Content-Type": "application/json",
     });
   } on FormatException catch (err) {
