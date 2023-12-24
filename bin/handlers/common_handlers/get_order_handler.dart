@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
@@ -10,7 +12,7 @@ getOrderHandler(Request req) async {
     final res = await SupaBaseIntegration().getFromTable(
         tableName: 'order', user: user, columnCondition: 'order_from_id');
 
-    return Response.ok(res.toString(), headers: {
+    return Response.ok(jsonEncode(res), headers: {
       "Content-Type": "application/json",
     });
   } on FormatException catch (err) {
