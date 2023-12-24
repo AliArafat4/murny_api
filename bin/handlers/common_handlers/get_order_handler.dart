@@ -10,7 +10,9 @@ getOrderHandler(Request req) async {
     final res = await SupaBaseIntegration().getFromTable(
         tableName: 'order', user: user, columnCondition: 'order_from_id');
 
-    return Response.ok(res.toString());
+    return Response.ok(res.toString(), headers: {
+      "Content-Type": "application/json",
+    });
   } on FormatException catch (err) {
     if (err.message == "Unexpected end of input") {
       return Response.badRequest(body: "Body cannot be empty");
