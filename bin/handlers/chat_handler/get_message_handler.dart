@@ -19,7 +19,7 @@ getMessageHandler(Request req) async {
     final Stream res = await SupaBaseIntegration()
         .getChatMessages(tableName: 'chat', user: user, sentTo: chatWithID);
 
-    return Response.ok(res.toString(), headers: {
+    return Response.ok(jsonEncode(res), headers: {
       "Content-Type": "application/json",
     });
   } on FormatException catch (err) {

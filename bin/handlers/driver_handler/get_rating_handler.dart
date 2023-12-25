@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
@@ -7,7 +9,7 @@ getRatingHandler(Request req) async {
     final UserResponse user = await SupaBaseIntegration()
         .getUserByToken(token: req.headers['token']!);
 
-    late final List<Map<String, dynamic>> res;
+    late final res;
     if (user.user!.userMetadata!['type'] == 'driver') {
       res = await SupaBaseIntegration().getFromTable(
           tableName: 'rate', user: user, columnCondition: 'driver_id');
@@ -17,7 +19,7 @@ getRatingHandler(Request req) async {
       return Response.badRequest(body: "user is not of type [driver]");
     }
 
-    return Response.ok(res.toString());
+    return Response.ok(jsonDecode(res));
   } on FormatException catch (err) {
     if (err.message == "Unexpected end of input") {
       return Response.badRequest(body: "Body cannot be empty");

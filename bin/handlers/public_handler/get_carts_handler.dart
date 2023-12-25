@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
@@ -7,7 +9,7 @@ getCartsHandler(Request req) async {
     final res =
         await SupaBaseIntegration().getFromPublicTable(tableName: 'car_tier');
 
-    return Response.ok(res.toString(), headers: {
+    return Response.ok(jsonEncode(res), headers: {
       "Content-Type": "application/json",
     });
   } on PostgrestException catch (err) {
