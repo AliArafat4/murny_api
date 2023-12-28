@@ -8,7 +8,7 @@ updateDriverProfileHandler(Request req) async {
   try {
     final Map<String, dynamic> body = jsonDecode(await req.readAsString());
     checkBody(
-        keys: ['name', 'location', 'phone', 'city', 'gender'], body: body);
+        keys: ['name', 'lat', 'lng', 'phone', 'city', 'gender'], body: body);
 
     //Get user object
     final UserResponse user = await SupaBaseIntegration()
