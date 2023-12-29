@@ -35,11 +35,8 @@ class SupaBaseIntegration {
     return await subaInstance.from(tableName).select().eq(columnCondition, user.user!.id);
   }
 
-  Future<List<Map<String, dynamic>>> getFromPublicTable(
-      {required String tableName, String condition = ''}) async {
-    return condition.isEmpty
-        ? await subaInstance.from(tableName).select()
-        : await subaInstance.from(tableName).select().eq('cart_id', condition);
+  Future<List<Map<String, dynamic>>> getFromPublicTable({required String tableName}) async {
+    return await subaInstance.from(tableName).select();
   }
 
   Future<List<Map<String, dynamic>>> filterDriversCarts(
