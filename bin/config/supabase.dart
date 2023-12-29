@@ -42,6 +42,11 @@ class SupaBaseIntegration {
         : await subaInstance.from(tableName).select().eq('cart_id', condition);
   }
 
+  Future<List<Map<String, dynamic>>> filterDriversCarts(
+      {required String tableName, required String condition}) async {
+    return await subaInstance.from(tableName).select().eq('cart_id', condition);
+  }
+
   Future<void> updateTable(
       {required String tableName,
       required Map<String, dynamic> body,

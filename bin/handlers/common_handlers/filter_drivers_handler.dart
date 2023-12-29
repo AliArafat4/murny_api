@@ -10,7 +10,7 @@ filterDriversHandler(Request req) async {
     final Map<String, dynamic> body = jsonDecode(await req.readAsString());
     checkBody(keys: ['cart_id'], body: body);
     final res = await SupaBaseIntegration()
-        .getFromPublicTable(tableName: 'driver', condition: body['cart_id']);
+        .filterDriversCarts(tableName: 'driver', condition: body['cart_id']);
 
     return Response.ok(jsonEncode(res), headers: {
       "Content-Type": "application/json",
