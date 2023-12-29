@@ -6,8 +6,7 @@ class SupaBaseIntegration {
   static late SupabaseClient subaInstance;
   get supabase {
     GotrueAsyncStorage? x;
-    final supabase = SupabaseClient(
-        "${env["SUPABASE_URL"]}", "${env["SUPABASE_SECRET_KEY"]}",
+    final supabase = SupabaseClient("${env["SUPABASE_URL"]}", "${env["SUPABASE_SECRET_KEY"]}",
         authOptions: AuthClientOptions(
           authFlowType: AuthFlowType.implicit,
           pkceAsyncStorage: x,
@@ -33,15 +32,14 @@ class SupaBaseIntegration {
     required UserResponse user,
     required String columnCondition,
   }) async {
-    return await subaInstance
-        .from(tableName)
-        .select()
-        .eq(columnCondition, user.user!.id);
+    return await subaInstance.from(tableName).select().eq(columnCondition, user.user!.id);
   }
 
   Future<List<Map<String, dynamic>>> getFromPublicTable(
-      {required String tableName}) async {
-    return await subaInstance.from(tableName).select();
+      {required String tableName, String condition = ''}) async {
+    return condition.isEmpty
+        ? await subaInstance.from(tableName).select()
+        : await subaInstance.from(tableName).select().eq('cart_id', condition);
   }
 
   Future<void> updateTable(
@@ -81,20 +79,17 @@ class SupaBaseIntegration {
 
     for (var avatar in avatars) {
       if (avatar.name.startsWith(user.user!.id)) {
-        await subaInstance.storage
-            .from(bucket)
-            .remove(["$path/${avatar.name}"]);
+        await subaInstance.storage.from(bucket).remove(["$path/${avatar.name}"]);
       }
     }
 
-    final newAvatarPath =
-        "/$path/${user.user!.id}-${DateTime.now()}.$extension";
+    final newAvatarPath = "/$path/${user.user!.id}-${DateTime.now()}.$extension";
 
-    await subaInstance.storage.from(bucket).uploadBinary(
-        newAvatarPath, Uint8List.fromList(List.from(body['image'])));
+    await subaInstance.storage
+        .from(bucket)
+        .uploadBinary(newAvatarPath, Uint8List.fromList(List.from(body['image'])));
 
-    final avatarURL =
-        subaInstance.storage.from(bucket).getPublicUrl(newAvatarPath);
+    final avatarURL = subaInstance.storage.from(bucket).getPublicUrl(newAvatarPath);
 
     await updateTable(body: {'image': avatarURL}, tableName: path, user: user);
   }
@@ -108,23 +103,19 @@ class SupaBaseIntegration {
 
     for (var avatar in avatars) {
       if (avatar.name.startsWith(user.user!.id)) {
-        await subaInstance.storage
-            .from('license')
-            .remove(["$path/${avatar.name}"]);
+        await subaInstance.storage.from('license').remove(["$path/${avatar.name}"]);
       }
     }
 
-    final newLicensePath =
-        "/$path/${user.user!.id}-${DateTime.now()}.$extension";
+    final newLicensePath = "/$path/${user.user!.id}-${DateTime.now()}.$extension";
 
-    await subaInstance.storage.from('license').uploadBinary(
-        newLicensePath, Uint8List.fromList(List.from(body['license'])));
+    await subaInstance.storage
+        .from('license')
+        .uploadBinary(newLicensePath, Uint8List.fromList(List.from(body['license'])));
 
-    final licenseURL =
-        subaInstance.storage.from('license').getPublicUrl(newLicensePath);
+    final licenseURL = subaInstance.storage.from('license').getPublicUrl(newLicensePath);
 
-    await updateTable(
-        body: {'license': licenseURL}, tableName: path, user: user);
+    await updateTable(body: {'license': licenseURL}, tableName: path, user: user);
   }
   //TODO-----------------------------Merge--------------------------------------
 
@@ -133,15 +124,13 @@ class SupaBaseIntegration {
     required UserResponse user,
     required String sentTo,
   }) async {
-    return subaInstance.from(tableName).stream(primaryKey: [
-      'id'
-    ]).map((msg) => msg.where((element) =>
-        element['sent_from'] == user.user!.id && element['sent_to'] == sentTo ||
-        element['sent_to'] == user.user!.id && element['sent_from'] == sentTo));
+    return subaInstance.from(tableName).stream(primaryKey: ['id']).map((msg) => msg.where(
+        (element) =>
+            element['sent_from'] == user.user!.id && element['sent_to'] == sentTo ||
+            element['sent_to'] == user.user!.id && element['sent_from'] == sentTo));
   }
 
-  Future<AuthResponse> signInWithGoogle(
-      {required accessToken, required idToken}) async {
+  Future<AuthResponse> signInWithGoogle({required accessToken, required idToken}) async {
     final SupabaseClient client = SupaBaseIntegration.subaInstance;
 
     if (accessToken == null) {
@@ -158,14 +147,12 @@ class SupaBaseIntegration {
     );
   }
 
-  Future<AuthResponse> signInWithApple(
-      {required credential, required rawNonce}) async {
+  Future<AuthResponse> signInWithApple({required credential, required rawNonce}) async {
     final SupabaseClient client = SupaBaseIntegration.subaInstance;
 
     final idToken = credential.identityToken;
     if (idToken == null) {
-      throw const AuthException(
-          'Could not find ID Token from generated credential.');
+      throw const AuthException('Could not find ID Token from generated credential.');
     }
 
     return await client.auth.signInWithIdToken(
