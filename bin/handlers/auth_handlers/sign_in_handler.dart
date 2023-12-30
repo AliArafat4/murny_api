@@ -5,6 +5,7 @@ import 'package:supabase/supabase.dart';
 
 import '../../config/supabase.dart';
 import '../../logic/check_body.dart';
+import '../../response/auth_response/auth_response.dart';
 
 signInHandler(Request req) async {
   try {
@@ -18,22 +19,16 @@ signInHandler(Request req) async {
 
     // final AuthResponse user =
     //     await client.auth.signInWithPassword(email: email, password: password);
-    final AuthResponse user = await client.auth
-        .verifyOTP(email: email, token: otp, type: OtpType.magiclink);
-    return Response.ok(
-        jsonEncode({
-          "message": "Login Successfully",
-          "token": user.session!.accessToken,
-          "expires_at": user.session!.expiresAt,
-          "refresh_token": user.session!.refreshToken,
-          "token_type": user.session!.tokenType,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        });
+    final AuthResponse user =
+        await client.auth.verifyOTP(email: email, token: otp, type: OtpType.magiclink);
+    return authResponse(user: user, message: "Login Successfully");
   } on AuthException catch (err) {
     return Response.badRequest(body: err.message);
   } catch (err) {
     return Response.badRequest(body: err.toString());
   }
 }
+//
+// Response authResponse(AuthResponse user) {
+//
+// }

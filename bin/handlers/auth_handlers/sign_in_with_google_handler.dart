@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
 import '../../logic/check_body.dart';
+import '../../response/auth_response/auth_response.dart';
 
 userSignInWithGoogleHandler(Request req) async {
   try {
@@ -15,16 +16,10 @@ userSignInWithGoogleHandler(Request req) async {
     final accessToken = body['accessToken'];
     final idToken = body['idToken'];
 
-    final AuthResponse user = await SupaBaseIntegration()
-        .signInWithGoogle(accessToken: accessToken, idToken: idToken);
+    final AuthResponse user =
+        await SupaBaseIntegration().signInWithGoogle(accessToken: accessToken, idToken: idToken);
 
-    return Response.ok(jsonEncode({
-      "message": "Account Created Successfully",
-      "token": user.session!.accessToken,
-      "expires_at": user.session!.expiresAt,
-      "refresh_token": user.session!.refreshToken,
-      "token_type": user.session!.tokenType,
-    }));
+    return authResponse(user: user, message: "Account Created Successfully");
   } on AuthException catch (err) {
     return Response.badRequest(body: err.message);
   } catch (err) {

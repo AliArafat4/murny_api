@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
 import '../../logic/check_body.dart';
+import '../../response/auth_response/auth_response.dart';
 
 userSignInWithAppleHandler(Request req) async {
   try {
@@ -15,16 +16,10 @@ userSignInWithAppleHandler(Request req) async {
     final credential = body['credential'];
     final rawNonce = body['rawNonce'];
 
-    final AuthResponse user = await SupaBaseIntegration()
-        .signInWithApple(credential: credential, rawNonce: rawNonce);
+    final AuthResponse user =
+        await SupaBaseIntegration().signInWithApple(credential: credential, rawNonce: rawNonce);
 
-    return Response.ok(jsonEncode({
-      "message": "Account Created Successfully",
-      "token": user.session!.accessToken,
-      "expires_at": user.session!.expiresAt,
-      "refresh_token": user.session!.refreshToken,
-      "token_type": user.session!.tokenType,
-    }));
+    return authResponse(user: user, message: "Account Created Successfully");
   } on AuthException catch (err) {
     return Response.badRequest(body: err.message);
   } catch (err) {
