@@ -15,7 +15,7 @@ resendOtpHandler(Request req) async {
     final SupabaseClient client = SupaBaseIntegration.subaInstance;
     final String email = body['email'];
 
-    await client.auth.resend(email: email, type: OtpType.magiclink);
+    await client.auth.resend(email: email, type: OtpType.signup);
 
     return Response.ok("OTP has been re-sent to $email successfully");
   } on AuthException catch (err) {
