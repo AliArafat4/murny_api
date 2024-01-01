@@ -18,7 +18,7 @@ getUserByIDHandler(Request req) async {
         columnCondition: 'user_id',
         condition: body['user_id']);
 
-    return Response.ok(jsonEncode(res), headers: {
+    return Response.ok(jsonEncode(res.first), headers: {
       "Content-Type": "application/json",
     });
   } on FormatException catch (err) {

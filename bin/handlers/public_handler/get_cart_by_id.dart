@@ -16,7 +16,7 @@ getCartByIDHandler(Request req) async {
         columnCondition: 'id',
         condition: body['cart_id']);
 
-    return Response.ok(jsonEncode(res), headers: {
+    return Response.ok(jsonEncode(res.first), headers: {
       "Content-Type": "application/json",
     });
   } on FormatException catch (err) {

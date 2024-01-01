@@ -16,7 +16,7 @@ getDriverByIDHandler(Request req) async {
         columnCondition: 'user_id',
         condition: body['driver_id']);
 
-    return Response.ok(jsonEncode(res), headers: {
+    return Response.ok(jsonEncode(res.first), headers: {
       "Content-Type": "application/json",
     });
   } on FormatException catch (err) {
