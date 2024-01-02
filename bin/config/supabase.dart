@@ -39,6 +39,18 @@ class SupaBaseIntegration {
         .eq(columnCondition, user.user!.id);
   }
 
+  Future<List<Map<String, dynamic>>> getFromTableWithFilter({
+    required String tableName,
+    required UserResponse user,
+    required String columnCondition,
+  }) async {
+    return await subaInstance
+        .from(tableName)
+        .select()
+        .eq(columnCondition, user.user!.id)
+        .order('id', ascending: true);
+  }
+
   Future<List<Map<String, dynamic>>> getFromTableByID({
     required String tableName,
     required String columnCondition,
