@@ -4,13 +4,13 @@ import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
 
-getLatUserOrderHandler(Request req) async {
+getLastDriverOrderHandler(Request req) async {
   try {
     final UserResponse user = await SupaBaseIntegration()
         .getUserByToken(token: req.headers['token']!);
 
     final res = await SupaBaseIntegration().getFromTableWithFilter(
-        tableName: 'order', user: user, columnCondition: 'order_from_id');
+        tableName: 'order', user: user, columnCondition: 'driver_id');
 
     return Response.ok(jsonEncode(res.last), headers: {
       "Content-Type": "application/json",

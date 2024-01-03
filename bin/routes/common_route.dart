@@ -3,6 +3,7 @@ import 'package:shelf_router/shelf_router.dart';
 import '../handlers/common_handlers/filter_drivers_handler.dart';
 import '../handlers/common_handlers/get_all_drivers_handler.dart';
 import '../handlers/common_handlers/get_driver_order_handler.dart';
+import '../handlers/common_handlers/get_last_driver_order_handler.dart';
 import '../handlers/common_handlers/get_last_user_order_handler.dart';
 import '../handlers/common_handlers/get_user_order_handler.dart';
 import '../middlewares/user_middleware.dart';
@@ -11,7 +12,8 @@ class CommonRoute {
   Handler get route {
     final Router appRoute = Router()
       ..get("/get_user_order", getUserOrderHandler)
-      ..get("/get_last_user_order", getLatUserOrderHandler)
+      ..get("/get_last_user_order", getLastUserOrderHandler)
+      ..get("/get_last_driver_order", getLastDriverOrderHandler)
       ..get("/get_driver_order", getDriverOrderHandler)
       ..get("/get_drivers", getAllDriversHandler)
       ..post("/get_drivers", filterDriversHandler);

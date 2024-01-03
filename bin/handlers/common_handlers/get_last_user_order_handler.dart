@@ -4,7 +4,7 @@ import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
 import '../../config/supabase.dart';
 
-getLatUserOrderHandler(Request req) async {
+getLastUserOrderHandler(Request req) async {
   try {
     final UserResponse user = await SupaBaseIntegration()
         .getUserByToken(token: req.headers['token']!);
