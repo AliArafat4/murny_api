@@ -156,16 +156,21 @@ class SupaBaseIntegration {
   }
   //TODO-----------------------------Merge--------------------------------------
 
-  Future<Stream> getChatMessages({
+  Future getChatMessages({
     required String tableName,
     required UserResponse user,
     required String sentTo,
   }) async {
-    return subaInstance.from(tableName).stream(primaryKey: [
-      'id'
-    ]).map((msg) => msg.where((element) =>
-        element['sent_from'] == user.user!.id && element['sent_to'] == sentTo ||
-        element['sent_to'] == user.user!.id && element['sent_from'] == sentTo));
+    return await subaInstance
+        .from(tableName)
+        .select()
+        .or('sent_from.eq.${user.user!.id},sent_to.eq.${user.user!.id}')
+        .or('sent_to.eq.${sentTo},sent_from.eq.${sentTo}');
+    // .map((msg) => msg.where((element) =>
+    //     element['sent_from'] == user.user!.id &&
+    //         element['sent_to'] == sentTo ||
+    //     element['sent_to'] == user.user!.id &&
+    //         element['sent_from'] == sentTo));
   }
 
   Future<AuthResponse> signInWithGoogle(

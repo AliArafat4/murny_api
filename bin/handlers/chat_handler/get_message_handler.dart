@@ -16,7 +16,7 @@ getMessageHandler(Request req) async {
     final String chatWithID = body['chat_with'];
     body.addAll({'sent_from': user.user!.id});
 
-    final Stream res = await SupaBaseIntegration()
+    final res = await SupaBaseIntegration()
         .getChatMessages(tableName: 'chat', user: user, sentTo: chatWithID);
 
     return Response.ok(jsonEncode(res), headers: {
